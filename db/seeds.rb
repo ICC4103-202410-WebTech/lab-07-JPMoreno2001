@@ -9,32 +9,36 @@
 #   end
 
 
-5.times do
-    User.create(
-      name: Faker::Name.name,
-      email: Faker::Internet.email,
-      password: Faker::Internet.password(min_length: 6)
-    )
-end
-  
-tags = []
-5.times do
-    tags << Tag.create(name: Faker::Lorem.word)
-end
-  
-users = User.all
-10.times do
-    user = users.sample
-    post = user.posts.create(
-      title: Faker::Lorem.sentence,
-      content: Faker::Lorem.paragraph,
-      published_at: Faker::Time.backward(days: 30),
-      answers_count: rand(10),
-      likes_count: rand(20)
-    )
-    post.tags << tags.sample(rand(1..3))
-end
-
-
 Post.delete_all
 User.delete_all
+PostTag.delete_all
+
+
+5.times do |n|
+  name = Faker::Name.name
+  email = Faker::Internet.email
+  password = "password123"  
+  User.create!(name: name, email: email, password: password)
+end
+
+tags = ["Ruby", "Rails", "Database", "Programming", "Web Development"]
+tags.each do |tag|
+  name = "#{tag} #{SecureRandom.hex(3)}" 
+  Tag.create!(name: name)
+end
+
+User.all.each do |user|
+  2.times do
+    post = user.posts.create!(
+      title: Faker::Lorem.sentence,
+      content: Faker::Lorem.paragraph,
+      answers_count: rand(0..10),
+      likes_count: rand(0..100),
+      tags: Tag.order("RANDOM()").limit(2)
+    )
+  end
+end
+
+
+
+

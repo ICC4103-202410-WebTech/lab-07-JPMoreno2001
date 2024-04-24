@@ -1,0 +1,5 @@
+john_doe_posts = User.find_by(name: "John Doe").posts
+
+post_1_tags = Post.find_by(title: "Post 1").tags
+
+users_with_tag_1_post = User.joins(posts: :tags).where(tags: { name: "Tag 1" }).distinct
